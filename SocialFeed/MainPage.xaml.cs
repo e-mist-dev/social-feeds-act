@@ -45,18 +45,7 @@ public class PostViewModel
     public bool HasImage => !string.IsNullOrEmpty(Post.ImagePath);
     public DateTime CreatedAt => Post.CreatedAt;
     public string VisibilityIcon => Post.IsPublic ? "🌐" : "🔒";
-    public string TimeAgo
-    {
-        get
-        {
-            var span = DateTime.Now - CreatedAt;
-            if (span.TotalMinutes < 1) return "Just now";
-            if (span.TotalMinutes < 60) return $"{(int)span.TotalMinutes}m ago";
-            if (span.TotalHours < 24) return $"{(int)span.TotalHours}h ago";
-            if (span.TotalDays < 7) return $"{(int)span.TotalDays}d ago";
-            return CreatedAt.ToString("MMM d");
-        }
-    }
+    public string TimeAgo => CreatedAt.ToString("MMM dd, yyyy 'at' h:mm tt");
 
     public PostViewModel(Post post) => Post = post;
 }
