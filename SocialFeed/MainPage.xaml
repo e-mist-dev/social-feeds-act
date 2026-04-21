@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SocialFeed.MainPage"
+             Title="Social Feed"
+             BackgroundColor="#F5F5F5">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <Grid ColumnDefinitions="*,Auto" 
+              Padding="20,16"
+              BackgroundColor="White">
+            <VerticalStackLayout VerticalOptions="Center">
+                <Label Text="Social Feed"
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       TextColor="#1A1A1A" />
+                <Label Text="Share your thoughts with the world"
+                       FontSize="13"
+                       TextColor="#666666"
+                       Margin="0,-4,0,0" />
+            </VerticalStackLayout>
+            <Border Grid.Column="1"
+                    StrokeThickness="0"
+                    BackgroundColor="#512BD4"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 12"
+                    VerticalOptions="Center">
+                <Button Text="+ New Post"
+                        BackgroundColor="Transparent"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        FontSize="15"
+                        Padding="20,12"
+                        Clicked="OnAddPostClicked" />
+            </Border>
+        </Grid>
+
+        <!-- Feed -->
+        <CollectionView x:Name="FeedCollection"
+                        Grid.Row="1"
+                        SelectionMode="None"
+                        Margin="16,12">
+            <CollectionView.EmptyView>
+                <StackLayout Padding="40"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center">
+                    <Label Text="📝"
+                           FontSize="64"
+                           HorizontalOptions="Center"
+                           Opacity="0.3" />
+                    <Label Text="No posts yet"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#666666"
+                           HorizontalOptions="Center"
+                           Margin="0,16,0,8" />
+                    <Label Text="Be the first to share something!"
+                           FontSize="15"
+                           TextColor="#999999"
+                           HorizontalOptions="Center" />
+                </StackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border StrokeThickness="0"
+                            BackgroundColor="White"
+                            StrokeShape="RoundRectangle 16"
+                            Margin="0,0,0,12"
+                            Padding="0">
+                        <Border.Shadow>
+                            <Shadow Brush="Black"
+                                    Opacity="0.08"
+                                    Radius="8"
+                                    Offset="0,2" />
+                        </Border.Shadow>
+                        
+                        <VerticalStackLayout Spacing="0">
+                            <!-- Post Header -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" 
+                                  Padding="16,16,16,12"
+                                  ColumnSpacing="12">
+                                <!-- Avatar -->
+                                <Border WidthRequest="44"
+                                        HeightRequest="44"
+                                        StrokeThickness="0"
+                                        BackgroundColor="#512BD4"
+                                        StrokeShape="RoundRectangle 22">
+                                    <Label Text="{Binding Author, Converter={StaticResource StringToInitials}}"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="White"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Border>
+                                
+                                <!-- Author Info -->
+                                <VerticalStackLayout Grid.Column="1" 
+                                                     Spacing="2"
+                                                     VerticalOptions="Center">
+                                    <Label Text="{Binding Author}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#1A1A1A" />
+                                    <Label Text="{Binding TimeAgo}"
+                                           FontSize="13"
+                                           TextColor="#999999" />
+                                </VerticalStackLayout>
+                                
+                                <!-- Visibility Icon -->
+                                <Label Grid.Column="2"
+                                       Text="{Binding VisibilityIcon}"
+                                       FontSize="18"
+                                       VerticalOptions="Center"
+                                       Opacity="0.6" />
+                            </Grid>
+                            
+                            <!-- Post Content -->
+                            <Label Text="{Binding Content}"
+                                   FontSize="15"
+                                   LineHeight="1.4"
+                                   TextColor="#333333"
+                                   Padding="16,0,16,12"
+                                   IsVisible="{Binding Content, Converter={StaticResource StringIsNotNullOrEmpty}}" />
+                            
+                            <!-- Post Image -->
+                            <Border StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 0"
+                                    IsVisible="{Binding HasImage}"
+                                    Margin="0,0,0,0">
+                                <Image Source="{Binding ImagePath}"
+                                       HeightRequest="300"
+                                       Aspect="AspectFill" />
+                            </Border>
+                            
+                            <!-- Post Footer -->
+                            <Grid Padding="16,12,16,14"
+                                  BackgroundColor="#FAFAFA">
+                                <Border StrokeThickness="0"
+                                        BackgroundColor="#512BD4"
+                                        Stroke="Transparent"
+                                        StrokeShape="RoundRectangle 10"
+                                        Padding="16,10"
+                                        HorizontalOptions="Start">
+                                    <Label Text="💬 View Comments"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="White">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnCommentsClicked" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </Border>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

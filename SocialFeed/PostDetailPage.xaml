@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+x:Class="SocialFeed.PostDetailPage"
+Title=""
+Shell.PresentationMode="Modal">
+
+    <Grid HorizontalOptions="Center" VerticalOptions="Center" Padding="20" BackgroundColor="Transparent">
+        <Frame BackgroundColor="White"
+               CornerRadius="24"
+               Padding="0"
+               HasShadow="True"
+               Shadow="{Shadow Brush=Black, Opacity=0.3, Radius=20, Offset='0,10'}"
+               MaximumWidthRequest="500"
+               MaximumHeightRequest="650">
+            <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="0">
+
+                <!-- Drag Handle -->
+                <BoxView HeightRequest="4"
+                         WidthRequest="40"
+                         CornerRadius="2"
+                         BackgroundColor="#E0E0E0"
+                         HorizontalOptions="Center"
+                         Margin="0,12,0,16" />
+
+                <!-- Header with Title and Close Button -->
+                <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" Padding="24,0,24,16">
+                    <Label Text="💬"
+                           FontSize="26"
+                           VerticalOptions="Center" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="2" Margin="12,0,0,0" VerticalOptions="Center">
+                        <Label Text="Comments"
+                               FontSize="22"
+                               FontAttributes="Bold"
+                               TextColor="#1A1A1A" />
+                        <Label x:Name="CommentCountLabel"
+                               Text="0 comments"
+                               FontSize="12"
+                               TextColor="#666666" />
+                    </VerticalStackLayout>
+                    <Border Grid.Column="2"
+                            StrokeThickness="0"
+                            BackgroundColor="#F5F5F5"
+                            Stroke="Transparent"
+                            WidthRequest="36"
+                            HeightRequest="36"
+                            StrokeShape="RoundRectangle 18">
+                        <Button Text="✕"
+                                BackgroundColor="Transparent"
+                                TextColor="#666666"
+                                FontSize="18"
+                                FontAttributes="Bold"
+                                Padding="0"
+                                WidthRequest="36"
+                                HeightRequest="36"
+                                Clicked="OnCloseClicked" />
+                    </Border>
+                </Grid>
+
+                <!-- Divider -->
+                <BoxView Grid.Row="2"
+                         HeightRequest="1"
+                         BackgroundColor="#E8E8E8"
+                         Margin="20,0,20,0" />
+
+                <!-- Comments List -->
+                <ScrollView Grid.Row="3" 
+                            Padding="24,20,24,0">
+                    <VerticalStackLayout Spacing="16">
+                        <CollectionView x:Name="CommentsCollection"
+                                        ItemsSource="{Binding}">
+                            <CollectionView.EmptyView>
+                                <StackLayout Padding="20,60"
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Center">
+                                    <Label Text="💭"
+                                           FontSize="64"
+                                           HorizontalOptions="Center"
+                                           Opacity="0.25" />
+                                    <Label Text="No comments yet"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="#666666"
+                                           HorizontalOptions="Center"
+                                           Margin="0,16,0,4" />
+                                    <Label Text="Be the first to share your thoughts!"
+                                           FontSize="14"
+                                           TextColor="#999999"
+                                           HorizontalOptions="Center" />
+                                </StackLayout>
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="Auto,*" 
+                                          ColumnSpacing="12"
+                                          Padding="0,0,0,12">
+                                        <Border WidthRequest="40"
+                                                HeightRequest="40"
+                                                StrokeThickness="0"
+                                                BackgroundColor="#E8DEFF"
+                                                StrokeShape="RoundRectangle 20"
+                                                VerticalOptions="Start">
+                                            <Label Text="👤"
+                                                   FontSize="20"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center" />
+                                        </Border>
+                                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                            <Border StrokeThickness="0"
+                                                    BackgroundColor="#F5F5F5"
+                                                    StrokeShape="RoundRectangle 16"
+                                                    Padding="16,12">
+                                                <VerticalStackLayout Spacing="4">
+                                                    <Label Text="Anonymous"
+                                                           FontSize="13"
+                                                           FontAttributes="Bold"
+                                                           TextColor="#512BD4" />
+                                                    <Label Text="{Binding}"
+                                                           FontSize="14"
+                                                           TextColor="#333333"
+                                                           LineBreakMode="WordWrap" />
+                                                </VerticalStackLayout>
+                                            </Border>
+                                            <Label Text="Just now"
+                                                   FontSize="11"
+                                                   TextColor="#999999"
+                                                   Margin="12,0,0,0" />
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <!-- Comment Input -->
+                <Grid Grid.Row="4"
+                      ColumnDefinitions="Auto,*,Auto"
+                      ColumnSpacing="12"
+                      Padding="24,16,24,24"
+                      BackgroundColor="#FAFAFA">
+                    <Border WidthRequest="44"
+                            HeightRequest="44"
+                            StrokeThickness="0"
+                            BackgroundColor="#E8DEFF"
+                            StrokeShape="RoundRectangle 22"
+                            VerticalOptions="End">
+                        <Label Text="👤"
+                               FontSize="22"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+                    <Border Grid.Column="1"
+                            StrokeThickness="1.5"
+                            Stroke="#E0E0E0"
+                            BackgroundColor="White"
+                            StrokeShape="RoundRectangle 22"
+                            Padding="16,12">
+                        <Entry x:Name="CommentEntry"
+                               Placeholder="Write a comment..."
+                               PlaceholderColor="#999999"
+                               TextColor="#1A1A1A"
+                               FontSize="15"
+                               BackgroundColor="Transparent"
+                               VerticalOptions="Center"
+                               ReturnType="Send"
+                               Completed="OnCommentSubmitted" />
+                    </Border>
+                    <Border Grid.Column="2"
+                            x:Name="SendButtonBorder"
+                            StrokeThickness="0"
+                            BackgroundColor="#512BD4"
+                            Stroke="Transparent"
+                            WidthRequest="48"
+                            HeightRequest="48"
+                            StrokeShape="RoundRectangle 24"
+                            VerticalOptions="End">
+                        <Button Text="➤"
+                                BackgroundColor="Transparent"
+                                TextColor="White"
+                                FontSize="20"
+                                FontAttributes="Bold"
+                                Padding="0"
+                                WidthRequest="48"
+                                HeightRequest="48"
+                                Clicked="OnCommentSubmitted" />
+                    </Border>
+                </Grid>
+
+            </Grid>
+        </Frame>
+    </Grid>
+
+</ContentPage>

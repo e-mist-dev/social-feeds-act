@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SocialFeed.AddPostPage"
+             Title=""
+             Shell.PresentationMode="Modal">
+
+    <Grid HorizontalOptions="Center" VerticalOptions="Center" Padding="20" BackgroundColor="Transparent">
+        <Frame BackgroundColor="White"
+               CornerRadius="24"
+               Padding="0"
+               HasShadow="True"
+               Shadow="{Shadow Brush=Black, Opacity=0.3, Radius=20, Offset='0,10'}"
+               MaximumWidthRequest="540"
+               MaximumHeightRequest="700">
+            
+            <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="0">
+
+                <!-- Drag Handle -->
+                <BoxView HeightRequest="4"
+                         WidthRequest="40"
+                         CornerRadius="2"
+                         BackgroundColor="#E0E0E0"
+                         HorizontalOptions="Center"
+                         Margin="0,12,0,16" />
+
+                <!-- Header -->
+                <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" Padding="24,0,24,16">
+                    <Label Text="✏️"
+                           FontSize="26"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1"
+                           Text="Create New Post"
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           TextColor="#1A1A1A"
+                           VerticalOptions="Center"
+                           Margin="12,0,0,0" />
+                </Grid>
+
+                <!-- Divider -->
+                <BoxView Grid.Row="2"
+                         HeightRequest="1"
+                         BackgroundColor="#E8E8E8"
+                         Margin="0,0,0,0" />
+
+                <!-- Content -->
+                <ScrollView Grid.Row="3" Padding="24,20,24,0">
+                    <VerticalStackLayout Spacing="24">
+
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="Author"
+                                   FontSize="14"
+                                   FontAttributes="Bold"
+                                   TextColor="#666666" />
+                            <Border StrokeThickness="1.5"
+                                    Stroke="#E0E0E0"
+                                    BackgroundColor="#FAFAFA"
+                                    StrokeShape="RoundRectangle 14"
+                                    Padding="16,12">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                    <Label Text="👤"
+                                           FontSize="20"
+                                           VerticalOptions="Center"
+                                           Opacity="0.6" />
+                                    <Entry Grid.Column="1"
+                                           x:Name="DescriptionEntry"
+                                           Placeholder="Enter your name"
+                                           PlaceholderColor="#999999"
+                                           TextColor="#1A1A1A"
+                                           FontSize="15"
+                                           MaxLength="150"
+                                           BackgroundColor="Transparent"
+                                           VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="10">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="Content"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="#666666"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="1"
+                                       x:Name="CharCountLabel"
+                                       Text="0/500"
+                                       FontSize="12"
+                                       TextColor="#999999"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                            <Border StrokeThickness="1.5"
+                                    Stroke="#E0E0E0"
+                                    BackgroundColor="#FAFAFA"
+                                    StrokeShape="RoundRectangle 14"
+                                    Padding="16,12">
+                                <Editor x:Name="ContentEditor"
+                                        Placeholder="What's on your mind? Share your thoughts..."
+                                        PlaceholderColor="#999999"
+                                        TextColor="#1A1A1A"
+                                        FontSize="15"
+                                        HeightRequest="140"
+                                        BackgroundColor="Transparent"
+                                        MaxLength="500"
+                                        TextChanged="OnContentTextChanged"
+                                        AutoSize="TextChanges" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="Image (optional)"
+                                   FontSize="14"
+                                   FontAttributes="Bold"
+                                   TextColor="#666666" />
+                            
+                            <Border StrokeThickness="1.5"
+                                    Stroke="{Binding Source={x:Reference ImagePreview}, Path=IsVisible, Converter={StaticResource BoolToStrokeConverter}}"
+                                    BackgroundColor="#FAFAFA"
+                                    StrokeShape="RoundRectangle 14"
+                                    Padding="16">
+                                <Grid RowDefinitions="Auto,Auto" RowSpacing="12">
+                                    <Border StrokeThickness="2"
+                                            Stroke="#E0E0E0"
+                                            BackgroundColor="White"
+                                            StrokeShape="RoundRectangle 12"
+                                            StrokeDashArray="4,4"
+                                            HeightRequest="200"
+                                            IsVisible="{Binding Source={x:Reference ImagePreview}, Path=IsVisible, Converter={StaticResource InvertedBoolConverter}}">
+                                        <VerticalStackLayout Spacing="12"
+                                                           HorizontalOptions="Center"
+                                                           VerticalOptions="Center">
+                                            <Label Text="📷"
+                                                   FontSize="48"
+                                                   HorizontalOptions="Center"
+                                                   Opacity="0.4" />
+                                            <Label Text="Add a photo to your post"
+                                                   FontSize="14"
+                                                   TextColor="#666666"
+                                                   HorizontalOptions="Center" />
+                                            <Border StrokeThickness="0"
+                                                    BackgroundColor="#512BD4"
+                                                    Stroke="Transparent"
+                                                    StrokeShape="RoundRectangle 10"
+                                                    HorizontalOptions="Center">
+                                                <Button Text="Choose Image"
+                                                        BackgroundColor="Transparent"
+                                                        TextColor="White"
+                                                        FontSize="14"
+                                                        FontAttributes="Bold"
+                                                        Padding="24,12"
+                                                        Clicked="OnPickImageClicked" />
+                                            </Border>
+                                        </VerticalStackLayout>
+                                    </Border>
+                                    
+                                    <Grid IsVisible="{Binding Source={x:Reference ImagePreview}, Path=IsVisible}">
+                                        <Border StrokeThickness="1"
+                                                Stroke="#E0E0E0"
+                                                BackgroundColor="#F5F5F5"
+                                                StrokeShape="RoundRectangle 12"
+                                                HeightRequest="200">
+                                            <Image x:Name="ImagePreview"
+                                                   Aspect="AspectFill"
+                                                   IsVisible="False" />
+                                        </Border>
+                                        <Border StrokeThickness="0"
+                                                BackgroundColor="#CC000000"
+                                                WidthRequest="32"
+                                                HeightRequest="32"
+                                                StrokeShape="RoundRectangle 16"
+                                                HorizontalOptions="End"
+                                                VerticalOptions="Start"
+                                                Margin="8">
+                                            <Button Text="✕"
+                                                    BackgroundColor="Transparent"
+                                                    TextColor="White"
+                                                    FontSize="16"
+                                                    FontAttributes="Bold"
+                                                    Padding="0"
+                                                    WidthRequest="32"
+                                                    HeightRequest="32"
+                                                    Clicked="OnRemoveImageClicked" />
+                                        </Border>
+                                    </Grid>
+                                    
+                                    <HorizontalStackLayout Grid.Row="1"
+                                                         Spacing="8"
+                                                         IsVisible="{Binding Source={x:Reference ImagePreview}, Path=IsVisible}">
+                                        <Label Text="📎"
+                                               FontSize="16"
+                                               VerticalOptions="Center" />
+                                        <Label x:Name="ImageFileLabel"
+                                               Text="No image selected"
+                                               FontSize="13"
+                                               TextColor="#666666"
+                                               LineBreakMode="TailTruncation"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="FillAndExpand" />
+                                        <Border StrokeThickness="0"
+                                                BackgroundColor="#F0F0F0"
+                                                StrokeShape="RoundRectangle 8"
+                                                Padding="0">
+                                            <Button Text="Change"
+                                                    BackgroundColor="Transparent"
+                                                    TextColor="#512BD4"
+                                                    FontSize="12"
+                                                    FontAttributes="Bold"
+                                                    Padding="12,6"
+                                                    Clicked="OnPickImageClicked" />
+                                        </Border>
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Border StrokeThickness="1.5"
+                                Stroke="#E0E0E0"
+                                BackgroundColor="#FAFAFA"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="16,14">
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                <Label Text="🌐"
+                                       FontSize="20"
+                                       VerticalOptions="Center" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Text="Visibility"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="#333333" />
+                                    <Label x:Name="VisibilityLabel"
+                                           Text="Public - Anyone can see this post"
+                                           FontSize="12"
+                                           TextColor="#666666" />
+                                </VerticalStackLayout>
+                                <Switch Grid.Column="2"
+                                        x:Name="VisibilitySwitch"
+                                        IsToggled="True"
+                                        OnColor="#512BD4"
+                                        Toggled="OnVisibilityToggled"
+                                        VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <!-- Action Buttons -->
+                <Grid Grid.Row="4"
+                      ColumnDefinitions="*,*"
+                      ColumnSpacing="12"
+                      Padding="24,20,24,24"
+                      BackgroundColor="#F9F9F9">
+                    <Border StrokeThickness="1.5"
+                            Stroke="#D0D0D0"
+                            BackgroundColor="White"
+                            StrokeShape="RoundRectangle 14">
+                        <Button Text="Cancel"
+                                BackgroundColor="Transparent"
+                                TextColor="#666666"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                HeightRequest="50"
+                                Clicked="OnCancelClicked" />
+                    </Border>
+                    <Border Grid.Column="1"
+                            x:Name="PostButtonBorder"
+                            StrokeThickness="0"
+                            BackgroundColor="#512BD4"
+                            Stroke="Transparent"
+                            StrokeShape="RoundRectangle 14">
+                        <Button x:Name="PostButton"
+                                Text="Publish Post"
+                                BackgroundColor="Transparent"
+                                TextColor="White"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                HeightRequest="50"
+                                Clicked="OnPostClicked" />
+                    </Border>
+                </Grid>
+
+            </Grid>
+        </Frame>
+    </Grid>
+
+</ContentPage>
