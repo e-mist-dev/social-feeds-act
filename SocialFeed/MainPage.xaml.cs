@@ -1,27 +1,54 @@
 ﻿using System.Collections.ObjectModel;
 using SocialFeed.Models;
+using SocialFeed.Services;
 
 namespace SocialFeed;
 
 public partial class MainPage : ContentPage
 {
     private readonly ObservableCollection<PostViewModel> _posts = new();
+    private readonly DatabaseService _databaseService;
 
-    public MainPage()
+    public MainPage(DatabaseService databaseService)
     {
         InitializeComponent();
-
+        
+        _databaseService = databaseService;
         FeedCollection.ItemsSource = _posts;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await LoadPostsAsync();
+    }
+
+    private async Task LoadPostsAsync()
+    {
+        try
+        {
+            var posts = await _databaseService.GetPostsAsync();
+            _posts.Clear();
+            
+            foreach (var post in posts)
+            {
+                _posts.Add(new PostViewModel(post));
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", $"Failed to load posts: {ex.Message}", "OK");
+        }
     }
 
     private async void OnAddPostClicked(object? sender, EventArgs e)
     {
-        var addPage = new AddPostPage();
-        addPage.Disappearing += (s, args) =>
+        var addPage = new AddPostPage(_databaseService);
+        addPage.Disappearing += async (s, args) =>
         {
             if (addPage.NewPost is not null)
             {
-                _posts.Insert(0, new PostViewModel(addPage.NewPost));
+                await LoadPostsAsync();
             }
         };
         await Navigation.PushModalAsync(new NavigationPage(addPage));

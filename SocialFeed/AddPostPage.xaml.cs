@@ -1,4 +1,5 @@
 using SocialFeed.Models;
+using SocialFeed.Services;
 
 namespace SocialFeed;
 
@@ -6,10 +7,12 @@ public partial class AddPostPage : ContentPage
 {
     public Post? NewPost { get; private set; }
     private string? _selectedImagePath;
+    private readonly DatabaseService _databaseService;
 
-    public AddPostPage()
+    public AddPostPage(DatabaseService databaseService)
     {
         InitializeComponent();
+        _databaseService = databaseService;
     }
 
     private void OnContentTextChanged(object? sender, TextChangedEventArgs e)
@@ -71,16 +74,34 @@ public partial class AddPostPage : ContentPage
             return;
         }
 
-        NewPost = new Post
+        try
         {
-            Author = DescriptionEntry.Text.Trim(),
-            Content = ContentEditor.Text?.Trim() ?? string.Empty,
-            ImagePath = _selectedImagePath,
-            CreatedAt = DateTime.Now,
-            IsPublic = VisibilitySwitch.IsToggled
-        };
+            // Disable button to prevent double submission
+            PostButton.IsEnabled = false;
+            PostButtonBorder.Opacity = 0.6;
 
-        await Navigation.PopModalAsync();
+            NewPost = new Post
+            {
+                Id = Guid.NewGuid().ToString(),
+                Author = DescriptionEntry.Text.Trim(),
+                Content = ContentEditor.Text?.Trim() ?? string.Empty,
+                ImagePath = _selectedImagePath,
+                CreatedAt = DateTime.Now,
+                IsPublic = VisibilitySwitch.IsToggled
+            };
+
+            // Save to database
+            await _databaseService.SavePostAsync(NewPost);
+
+            await DisplayAlert("Success", "Post published successfully!", "OK");
+            await Navigation.PopModalAsync();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", $"Failed to save post: {ex.Message}", "OK");
+            PostButton.IsEnabled = true;
+            PostButtonBorder.Opacity = 1.0;
+        }
     }
 
     private async void OnCancelClicked(object? sender, EventArgs e)
